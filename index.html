@@ -1,230 +1,204 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Game Tanda Jejak & Tanda Medan</title>
-
-  <style>
-    /* ===== RESET & DASAR ===== */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f4ef;
-      display: flex;
-      justify-content: center;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 420px;
-      padding: 20px;
-    }
-
-    h1, h2 {
-      text-align: center;
-      margin: 0 0 10px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    /* ===== CARD ===== */
-    .card {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    }
-
-    /* ===== FORM & BUTTON ===== */
-    input,
-    button {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      box-sizing: border-box;
-    }
-
-    input {
-      margin-bottom: 10px;
-    }
-
-    button {
-      background: #2f7d4c;
-      color: #ffffff;
-      border: none;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
-    button.secondary {
-      background: #c0392b; /* MERAH untuk LEWATI */
-    }
-
-    /* ===== UTIL ===== */
-    .hidden {
-      display: none;
-    }
-
-    .top {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Tanda Jejak & Tanda Medan</title>
+<style>
+body {margin:0;font-family:Arial,sans-serif;background:#f6f4ef;display:flex;justify-content:center;}
+.app{width:100%;max-width:420px;padding:20px;}
+h1,h2{text-align:center;margin:0 0 10px;}
+.subtitle{text-align:center;color:#666;margin-bottom:20px;}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+input,button{width:100%;padding:14px;font-size:16px;border-radius:10px;border:1px solid #ddd;box-sizing:border-box;}
+input{margin-bottom:10px;}
+button{background:#2f7d4c;color:#fff;border:none;cursor:pointer;margin-bottom:8px;}
+button.secondary{background:#c0392b;}
+.hidden{display:none;}
+.top{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:10px;}
+img{width:100%;border-radius:12px;margin-bottom:10px;}
+#pertanyaan{background:#f0f0f0;text-align:center;font-weight:bold;margin-bottom:10px;padding:10px;border-radius:10px;}
+.jawaban-item{margin-bottom:10px; border:1px solid #ddd; border-radius:10px; padding:8px; background:#f9f9f9;}
+.jawaban-item button{width:48%; display:inline-block; margin-right:2%; margin-top:5px;}
+.jawaban-item button:last-child{margin-right:0;}
+</style>
 </head>
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <!-- ===== HALAMAN START ===== -->
-    <div id="start" class="card">
-      <h1>Tanda Jejak &<br />Tanda Medan</h1>
-      <div class="subtitle">Mode Latihan Mandiri</div>
+<!-- HALAMAN START -->
+<div id="start" class="card">
+<h1>Tanda Jejak &<br>Tanda Medan</h1>
+<div class="subtitle">Mode Latihan Mandiri</div>
+<input id="regu" type="text" placeholder="Nama Regu" />
+<button id="btnMulai">▶ MULAI LATIHAN</button>
+</div>
 
-      <input id="regu" type="text" placeholder="Nama Regu" />
+<!-- HALAMAN GAME -->
+<div id="game" class="hidden">
+<div class="top">
+<div id="timer">05:00</div>
+<div id="nomor">1 / 78</div>
+</div>
 
-      <button onclick="mulaiGame()">▶ MULAI LATIHAN</button>
-    </div>
+<div id="pertanyaan">Apa arti tanda jejak / tanda medan ini?</div>
 
-    <!-- ===== HALAMAN GAME ===== -->
-    <div id="game" class="hidden">
-      <div class="top">
-        <div id="timer">05:00</div>
-        <div id="nomor">1 / 78</div>
-      </div>
+<img id="gambar" src="" alt="Soal" />
+<input id="jawaban" type="text" placeholder="Ketik jawaban di sini" />
 
-      <img id="gambar" src="" alt="Soal" />
+<button id="btnLanjut">LANJUT</button>
+<button class="secondary" id="btnLewati">LEWATI</button>
+</div>
 
-      <input id="jawaban" type="text" placeholder="Ketik jawaban di sini" />
+<!-- HALAMAN SELESAI -->
+<div id="selesai" class="hidden card">
+<h2>Latihan Selesai</h2>
+<p>Silakan koreksi jawabanmu sendiri dengan kunci cetak.</p>
+<div id="rekapJawaban"></div>
+<p id="totalSkor" style="text-align:center; font-weight:bold;"></p>
+<button id="btnUlang">🔁 ULANGI LATIHAN</button>
+</div>
 
-      <button onclick="jawabDanLanjut()">LANJUT</button>
-      <button class="secondary" onclick="lewatiSoal()">LEWATI</button>
-    </div>
+</div>
 
-    <!-- ===== HALAMAN SELESAI ===== -->
-    <div id="selesai" class="hidden card">
-      <h2>Latihan Selesai</h2>
-      <p style="text-align:center">
-        Silakan cocokkan jawaban dengan <br />
-        <b>kunci jawaban cetak</b> yang sudah dibagikan.
-      </p>
-      <button onclick="ulangGame()">🔁 ULANGI LATIHAN</button>
-    </div>
+<script>
+const TOTAL_SOAL = 78;
+const WAKTU_TOTAL = 300;
+const POIN_PER_JAWAB = 10;
 
-  </div>
+const startEl = document.getElementById('start');
+const gameEl = document.getElementById('game');
+const selesaiEl = document.getElementById('selesai');
+const reguInput = document.getElementById('regu');
+const timerEl = document.getElementById('timer');
+const nomorEl = document.getElementById('nomor');
+const gambarEl = document.getElementById('gambar');
+const jawabanEl = document.getElementById('jawaban');
+const rekapEl = document.getElementById('rekapJawaban');
+const totalSkorEl = document.getElementById('totalSkor');
+const btnMulai = document.getElementById('btnMulai');
+const btnLanjut = document.getElementById('btnLanjut');
+const btnLewati = document.getElementById('btnLewati');
+const btnUlang = document.getElementById('btnUlang');
 
-  <script>
-    /* ===== KONFIGURASI ===== */
-    const TOTAL_SOAL = 78;
-    const WAKTU_TOTAL = 300; // detik (5 menit)
+let urutanSoal = [];
+let indexSoal = 0;
+let sisaWaktu = WAKTU_TOTAL;
+let intervalTimer;
+let jawabanSiswa = [];
+let skor = 0;
 
-    /* ===== ELEMENT ===== */
-    const startEl = document.getElementById('start');
-    const gameEl = document.getElementById('game');
-    const selesaiEl = document.getElementById('selesai');
+function mulaiGame(){
+    if(!reguInput.value.trim()){ alert('Silakan isi nama regu'); return; }
+    acakSoal();
+    indexSoal=0; sisaWaktu=WAKTU_TOTAL; jawabanSiswa=[]; skor=0;
+    startEl.classList.add('hidden'); gameEl.classList.remove('hidden');
+    tampilSoal(); mulaiTimer();
+}
 
-    const reguInput = document.getElementById('regu');
-    const timerEl = document.getElementById('timer');
-    const nomorEl = document.getElementById('nomor');
-    const gambarEl = document.getElementById('gambar');
-    const jawabanEl = document.getElementById('jawaban');
+function acakSoal(){
+    urutanSoal = Array.from({length:TOTAL_SOAL},(_,i)=>i+1);
+    urutanSoal.sort(()=>Math.random()-0.5);
+}
 
-    /* ===== STATE ===== */
-    let urutanSoal = [];
-    let indexSoal = 0;
-    let sisaWaktu = WAKTU_TOTAL;
-    let intervalTimer;
+function tampilSoal(){
+    nomorEl.textContent = `${indexSoal+1} / ${TOTAL_SOAL}`;
+    gambarEl.src = `gambar/${urutanSoal[indexSoal]}.jpeg`;
+    jawabanEl.value = '';
+}
 
-    /* ===== FUNGSI ===== */
-    function mulaiGame() {
-      if (!reguInput.value.trim()) {
-        alert('Silakan isi nama regu terlebih dahulu');
-        return;
-      }
+function simpanJawaban(){
+    jawabanSiswa.push(jawabanEl.value.trim());
+    lanjutSoal();
+}
 
-      acakSoal();
-      indexSoal = 0;
-      sisaWaktu = WAKTU_TOTAL;
+function lewatiSoal(){
+    jawabanSiswa.push(""); 
+    lanjutSoal();
+}
 
-      startEl.classList.add('hidden');
-      gameEl.classList.remove('hidden');
+function lanjutSoal(){
+    indexSoal++;
+    if(indexSoal>=TOTAL_SOAL){ selesaiGame(); }
+    else{ tampilSoal(); }
+}
 
-      tampilSoal();
-      mulaiTimer();
-    }
-
-    function acakSoal() {
-      urutanSoal = Array.from({ length: TOTAL_SOAL }, (_, i) => i + 1);
-      urutanSoal.sort(() => Math.random() - 0.5);
-    }
-
-    function tampilSoal() {
-      nomorEl.textContent = `${indexSoal + 1} / ${TOTAL_SOAL}`;
-      gambarEl.src = `gambar/${urutanSoal[indexSoal]}.jpeg`;
-      jawabanEl.value = '';
-    }
-
-    function jawabDanLanjut() {
-      lanjutSoal();
-    }
-
-    function lewatiSoal() {
-      lanjutSoal();
-    }
-
-    function lanjutSoal() {
-      indexSoal++;
-      if (indexSoal >= TOTAL_SOAL) {
-        selesaiGame();
-      } else {
-        tampilSoal();
-      }
-    }
-
-    function mulaiTimer() {
-      timerEl.textContent = formatWaktu(sisaWaktu);
-      intervalTimer = setInterval(() => {
+function mulaiTimer(){
+    timerEl.textContent = formatWaktu(sisaWaktu);
+    intervalTimer = setInterval(()=>{
         sisaWaktu--;
         timerEl.textContent = formatWaktu(sisaWaktu);
+        if(sisaWaktu<=0){ selesaiGame(); }
+    },1000);
+}
 
-        if (sisaWaktu <= 0) {
-          selesaiGame();
-        }
-      }, 1000);
-    }
+function formatWaktu(detik){
+    const m=String(Math.floor(detik/60)).padStart(2,'0');
+    const s=String(detik%60).padStart(2,'0');
+    return `${m}:${s}`;
+}
 
-    function formatWaktu(detik) {
-      const m = String(Math.floor(detik / 60)).padStart(2, '0');
-      const s = String(detik % 60).padStart(2, '0');
-      return `${m}:${s}`;
-    }
+function selesaiGame(){
+    clearInterval(intervalTimer);
+    gameEl.classList.add('hidden'); selesaiEl.classList.remove('hidden');
+    tampilRekap();
+}
 
-    function selesaiGame() {
-      clearInterval(intervalTimer);
-      gameEl.classList.add('hidden');
-      selesaiEl.classList.remove('hidden');
-    }
+function tampilRekap(){
+    rekapEl.innerHTML="";
+    skor=0;
+    jawabanSiswa.forEach((jawab,i)=>{
+        const div = document.createElement('div');
+        div.className="jawaban-item";
+        div.innerHTML = `
+            <div><b>Soal ${i+1}:</b> ${jawab||"<i>Dilewati</i>"}</div>
+            <button onclick="tandaiBenar(this)">✅ Benar</button>
+            <button onclick="tandaiSalah(this)">❌ Salah</button>
+        `;
+        rekapEl.appendChild(div);
+    });
+    updateSkor();
+}
 
-    function ulangGame() {
-      selesaiEl.classList.add('hidden');
-      startEl.classList.remove('hidden');
+function tandaiBenar(btn){
+    const div = btn.parentElement;
+    if(!div.dataset.status){
+        div.dataset.status="benar";
+        skor += POIN_PER_JAWAB;
+    } else if(div.dataset.status==="salah"){
+        div.dataset.status="benar";
+        skor += POIN_PER_JAWAB;
     }
-  </script>
+    updateSkor();
+}
+
+function tandaiSalah(btn){
+    const div = btn.parentElement;
+    if(!div.dataset.status){
+        div.dataset.status="salah";
+    } else if(div.dataset.status==="benar"){
+        div.dataset.status="salah";
+        skor -= POIN_PER_JAWAB;
+    }
+    updateSkor();
+}
+
+function updateSkor(){
+    totalSkorEl.textContent = `Skor total: ${skor}`;
+}
+
+function ulangGame(){
+    selesaiEl.classList.add('hidden');
+    startEl.classList.remove('hidden');
+    jawabanSiswa=[]; skor=0;
+}
+
+btnMulai.addEventListener('click', mulaiGame);
+btnLanjut.addEventListener('click', simpanJawaban);
+btnLewati.addEventListener('click', lewatiSoal);
+btnUlang.addEventListener('click', ulangGame);
+</script>
 
 </body>
 </html>
